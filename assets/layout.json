@@ -1,0 +1,32 @@
+{
+  "artboard": { "width": 1728, "height": 1117 },
+  "background": {
+    "x": 0,
+    "y": 3,
+    "width": 1730.6666259765625,
+    "height": 944,
+    "src": "assets/background.png",
+    "frames": [
+      "assets/background-1.jpg",
+      "assets/background-2.jpg",
+      "assets/background-3.jpg",
+      "assets/background-4.jpg",
+      "assets/background-5.jpg"
+    ],
+    "frameMs": 1000
+  },
+  "planter": {
+    "x": 196,
+    "y": 75,
+    "width": 1337,
+    "height": 112,
+    "src": "assets/planter.png"
+  },
+  "vinesSheet": {
+    "src": "assets/vines.svg",
+    "x": 172.35211181640625,
+    "y": 45,
+    "width": 1375.64794921875,
+    "height": 755
+  }
+}
