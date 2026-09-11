@@ -21,3 +21,17 @@ canvas {
   touch-action: none;
   cursor: default;
 }
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  pointer-events: none;
+  color: #000;
+  font: 500 15px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
