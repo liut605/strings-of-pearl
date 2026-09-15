@@ -49,6 +49,8 @@ export class Vine {
     }));
     this.fallen = 0;
     this.cooldown = 0;
+    /** 0–1 stem reveal from the hanging point downward. */
+    this.growth = 0;
     this.placePearls();
   }
 
@@ -203,29 +205,45 @@ export class Vine {
   }
 
   draw(ctx) {
+    const growth = Math.max(0, Math.min(1, this.growth));
+    if (growth <= 0.001) return;
+
+    const pts = this.particles;
+    const end = growth * (pts.length - 1);
+    const iEnd = Math.floor(end);
+    const frac = end - iEnd;
+    const visible = [];
+    for (let i = 0; i <= iEnd; i++) visible.push(pts[i].pos);
+    if (frac > 0.001 && iEnd < pts.length - 1) {
+      const a = pts[iEnd].pos;
+      const b = pts[iEnd + 1].pos;
+      visible.push({ x: lerp(a.x, b.x, frac), y: lerp(a.y, b.y, frac) });
+    }
+    if (visible.length < 2) return;
+
     ctx.save();
     ctx.strokeStyle = this.stemFill;
     ctx.lineWidth = this.stemWidth;
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.beginPath();
-    const pts = this.particles;
-    ctx.moveTo(pts[0].pos.x, pts[0].pos.y);
-    if (pts.length === 2) {
-      ctx.lineTo(pts[1].pos.x, pts[1].pos.y);
+    ctx.moveTo(visible[0].x, visible[0].y);
+    if (visible.length === 2) {
+      ctx.lineTo(visible[1].x, visible[1].y);
     } else {
-      for (let i = 1; i < pts.length - 1; i++) {
-        const midX = (pts[i].pos.x + pts[i + 1].pos.x) / 2;
-        const midY = (pts[i].pos.y + pts[i + 1].pos.y) / 2;
-        ctx.quadraticCurveTo(pts[i].pos.x, pts[i].pos.y, midX, midY);
+      for (let i = 1; i < visible.length - 1; i++) {
+        const midX = (visible[i].x + visible[i + 1].x) / 2;
+        const midY = (visible[i].y + visible[i + 1].y) / 2;
+        ctx.quadraticCurveTo(visible[i].x, visible[i].y, midX, midY);
       }
-      const last = pts[pts.length - 1].pos;
+      const last = visible[visible.length - 1];
       ctx.lineTo(last.x, last.y);
     }
     ctx.stroke();
     ctx.restore();
 
     for (const pearl of this.pearls) {
+      if (pearl.attached && pearl.t > growth) continue;
       if (!pearl.attached && pearl.pos.y > 1250) continue;
       this.drawPearl(ctx, pearl);
     }
